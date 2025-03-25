@@ -1,0 +1,39 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "thai-massage-8a4e7",
+                    "appId": "1:459600208813:android:e7ad8222b569b3b4e07724",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "ios": {
+                "default": {
+                    "projectId": "thai-massage-8a4e7",
+                    "appId": "1:459600208813:ios:18453fcb0db0f736e07724",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "macos": {
+                "default": {
+                    "projectId": "thai-massage-8a4e7",
+                    "appId": "1:459600208813:ios:18453fcb0db0f736e07724",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "macos/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "thai-massage-8a4e7",
+                    "configurations": {
+                        "android": "1:459600208813:android:e7ad8222b569b3b4e07724",
+                        "ios": "1:459600208813:ios:18453fcb0db0f736e07724",
+                        "web": "1:459600208813:web:81059d5fd8fc0b67e07724"
+                    }
+                }
+            }
+        }
+    }
+}
