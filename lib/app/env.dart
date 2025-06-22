@@ -7,7 +7,7 @@
   Copyright and Good Faith Purchasers © 2025-present initappz.
 */
 class Environments {
-  static const String appName = 'Ultimate Owner Salon & Shop';
-  static const String companyName = 'Initappz';
-  static const String apiBaseURL = 'http://188.166.182.122/';
+  static const String appName = 'Sabai Dee Owner';
+  static const String companyName = 'Sabai Dee';
+  static const String apiBaseURL = 'https://api.youtaicosmetic.net/';
 }

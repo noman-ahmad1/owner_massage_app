@@ -1,0 +1,2 @@
+/Users/mac/Downloads/App_source_code_v8/owner_massage_app/android/app/.cxx/Debug/o4m4c266/x86_64/CMakeFiles/edit_cache.dir
+/Users/mac/Downloads/App_source_code_v8/owner_massage_app/android/app/.cxx/Debug/o4m4c266/x86_64/CMakeFiles/rebuild_cache.dir
