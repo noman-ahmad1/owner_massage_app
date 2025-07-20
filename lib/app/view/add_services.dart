@@ -135,78 +135,115 @@ class _AddServicesScreenState extends State<AddServicesScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: value.priceTextEditor,
-                            onChanged: (String txt) => value.onRealPrice(txt),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: ThemeProvider.whiteColor,
-                              hintText: 'Service Price'.tr,
-                              contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
-                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
-                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Select Pricing Details'.tr, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                            InkWell(
+                              onTap: () => value.addNewPricingOption(),
+                              child: Icon(Icons.add_circle, color: ThemeProvider.appColor, size: 25),
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: value.discountTextEditor,
-                            onChanged: (String txt) => value.onDiscountPrice(txt),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: ThemeProvider.whiteColor,
-                              hintText: 'Discount %'.tr,
-                              contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
-                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
-                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: value.offTextEditor,
-                            decoration: InputDecoration(
-                              filled: true,
-                              enabled: false,
-                              disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
-                              fillColor: ThemeProvider.whiteColor,
-                              hintText: 'Sell Price'.tr,
-                              contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
-                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
-                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: TextField(
-                            controller: value.durationTextEditor,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              filled: true,
-                              disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
-                              fillColor: ThemeProvider.whiteColor,
-                              hintText: 'Service Duration'.tr,
-                              contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
-                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
-                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
-                            ),
-                          ),
-                        ),
+                      Column(
+                        children: List.generate(value.pricingOptions.length, (index) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Pricing Option ${index + 1}'.tr, style: const TextStyle(fontSize: 17)),
+                                    if (index > 0) // Only show remove button for additional options
+                                      InkWell(
+                                        onTap: () => value.removePricingOption(index),
+                                        child: Icon(Icons.remove_circle, color: const Color.fromARGB(255, 238, 7, 7), size: 25),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextField(
+                                    controller: value.pricingOptions[index].priceController,
+                                    onChanged: (String txt) => value.onRealPrice(txt, index),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: ThemeProvider.whiteColor,
+                                      hintText: 'Service Price'.tr,
+                                      contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextField(
+                                    controller: value.pricingOptions[index].discountController,
+                                    onChanged: (String txt) => value.onDiscountPrice(txt, index),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: ThemeProvider.whiteColor,
+                                      hintText: 'Discount %'.tr,
+                                      contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextField(
+                                    controller: value.pricingOptions[index].offController,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      enabled: false,
+                                      disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                      fillColor: ThemeProvider.whiteColor,
+                                      hintText: 'Sell Price'.tr,
+                                      contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TextField(
+                                    controller: value.pricingOptions[index].durationController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      disabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                      fillColor: ThemeProvider.whiteColor,
+                                      hintText: 'Service Duration'.tr,
+                                      contentPadding: const EdgeInsets.only(bottom: 8.0, top: 14.0, left: 10),
+                                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.appColor)),
+                                      enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeProvider.greyColor)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (index < value.pricingOptions.length - 1) // Add divider between options except last one
+                                Divider(color: ThemeProvider.greyColor.withOpacity(0.5), thickness: 1),
+                            ],
+                          );
+                        }),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),

@@ -60,11 +60,16 @@ class AppointmentController extends GetxController with GetTickerProviderStateMi
       _appointmentListOld = [];
       body.forEach((data) {
         AppointmentModel appointment = AppointmentModel.fromJson(data);
+        if(appointment.userInfo != null) {
+          
+       
+        
         if (appointment.status == 0) {
           _appointmentList.add(appointment);
         } else {
           _appointmentListOld.add(appointment);
         }
+         }
       });
     } else {
       ApiChecker.checkApi(response);

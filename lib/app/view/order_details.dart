@@ -51,7 +51,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               child: SizedBox.fromSize(
                                 size: const Size.fromRadius(30),
                                 child: FadeInImage(
-                                  image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentInfo.userInfo!.cover.toString()}'),
+                                  image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentInfo.userInfo?.cover.toString()}'),
                                   placeholder: const AssetImage("assets/images/placeholder.jpeg"),
                                   imageErrorBuilder: (context, error, stackTrace) {
                                     return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 30, width: 30);
@@ -67,10 +67,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('${value.appointmentInfo.userInfo!.firstName} ${value.appointmentInfo.userInfo!.lastName}', overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: 'bold', fontSize: 14)),
-                                  Text(value.appointmentInfo.userInfo!.email.toString(), style: const TextStyle(fontSize: 12)),
+                                  Text('${value.appointmentInfo.userInfo?.firstName} ${value.appointmentInfo.userInfo?.lastName}', overflow: TextOverflow.ellipsis, style: const TextStyle(fontFamily: 'bold', fontSize: 14)),
+                                  Text(value.appointmentInfo.userInfo?.email.toString() ?? 'Not Available', style: const TextStyle(fontSize: 12)),
                                   const SizedBox(height: 4),
-                                  Text(value.appointmentInfo.userInfo!.mobile.toString(), style: const TextStyle(fontSize: 12)),
+                                  Text(value.appointmentInfo.userInfo?.mobile.toString() ?? 'Not Available', style: const TextStyle(fontSize: 12)),
                                 ],
                               ),
                             ),

@@ -18,6 +18,27 @@ import 'package:owner/app/helper/router.dart';
 import 'package:owner/app/util/theme.dart';
 import 'package:owner/app/util/toast.dart';
 
+class PricingOption {
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController discountController = TextEditingController();
+  final TextEditingController offController = TextEditingController();
+  final TextEditingController durationController = TextEditingController();
+
+  Map<String, dynamic> toJson() => {
+    'price': priceController.text,
+    'discount': discountController.text,
+    'off': offController.text,
+    'duration': durationController.text,
+  };
+
+  void dispose() {
+    priceController.dispose();
+    discountController.dispose();
+    offController.dispose();
+    durationController.dispose();
+  }
+}
+
 class AddServicesController extends GetxController implements GetxService {
   final AddServicesParser parser;
 
@@ -25,14 +46,11 @@ class AddServicesController extends GetxController implements GetxService {
   XFile? _selectedImage;
 
   List<String> gallery = ['', '', '', '', '', ''];
+  List<PricingOption> pricingOptions = [PricingOption()];
 
   String selectedServicesName = '';
   String selectedServicesId = '';
   final nameTextEditor = TextEditingController();
-  final durationTextEditor = TextEditingController();
-  final priceTextEditor = TextEditingController();
-  final discountTextEditor = TextEditingController();
-  final offTextEditor = TextEditingController();
   final descriptionsTextEditor = TextEditingController();
   int selectedStatus = 1;
 
@@ -48,6 +66,8 @@ class AddServicesController extends GetxController implements GetxService {
   @override
   void onInit() {
     super.onInit();
+    addNewPricingOption();
+
     if (Get.arguments[0] == 'edit') {
       action = 'edit';
       serviceId = Get.arguments[1] as int;
@@ -58,6 +78,27 @@ class AddServicesController extends GetxController implements GetxService {
     }
   }
 
+  @override
+  void onClose() {
+    nameTextEditor.dispose();
+    descriptionsTextEditor.dispose();
+    for (var option in pricingOptions) {
+      option.dispose();
+    }
+    super.onClose();
+  }
+
+  void addNewPricingOption() {
+    pricingOptions.add(PricingOption());
+    update();
+  }
+
+  void removePricingOption(int index) {
+    pricingOptions[index].dispose();
+    pricingOptions.removeAt(index);
+    update();
+  }
+
   void onSaveCategory(String id, String name) {
     selectedServicesId = id;
     selectedServicesName = name;
@@ -66,20 +107,14 @@ class AddServicesController extends GetxController implements GetxService {
   }
 
   Future<void> onSubmit() async {
-    if (nameTextEditor.text == '' ||
-        nameTextEditor.text.isEmpty ||
-        selectedServicesId == '' ||
+    if (nameTextEditor.text.isEmpty ||
         selectedServicesId.isEmpty ||
-        durationTextEditor.text == '' ||
-        durationTextEditor.text.isEmpty ||
-        priceTextEditor.text == '' ||
-        priceTextEditor.text.isEmpty ||
-        discountTextEditor.text == '' ||
-        discountTextEditor.text.isEmpty ||
-        descriptionsTextEditor.text == '' ||
         descriptionsTextEditor.text.isEmpty ||
-        cover == '' ||
-        cover.isEmpty) {
+        cover.isEmpty ||
+        pricingOptions.any((option) =>
+            option.priceController.text.isEmpty ||
+            option.discountController.text.isEmpty ||
+            option.durationController.text.isEmpty)) {
       showToast('All fields are required!');
       return;
     }
@@ -88,11 +123,11 @@ class AddServicesController extends GetxController implements GetxService {
       SimpleDialog(
         children: [
           Row(
-            children: [
-              const SizedBox(width: 30),
-              const CircularProgressIndicator(color: ThemeProvider.appColor),
-              const SizedBox(width: 30),
-              SizedBox(child: Text("Please wait".tr, style: const TextStyle(fontFamily: 'bold'))),
+            children: const [
+              SizedBox(width: 30),
+              CircularProgressIndicator(color: ThemeProvider.appColor),
+              SizedBox(width: 30),
+              Text("Please wait", style: TextStyle(fontFamily: 'bold')),
             ],
           )
         ],
@@ -100,32 +135,33 @@ class AddServicesController extends GetxController implements GetxService {
       barrierDismissible: false,
     );
 
-    var body = {
+    var dataList = pricingOptions.map((option) => {
       "uid": parser.getUID(),
       "name": nameTextEditor.text,
       "cate_id": selectedServicesId,
-      "duration": durationTextEditor.text,
-      "price": priceTextEditor.text,
-      "off": offTextEditor.text,
-      "discount": discountTextEditor.text,
+      "duration": option.durationController.text,
+      "price": option.priceController.text,
+      "discount": option.discountController.text,
+      "off": option.offController.text,
       "images": jsonEncode(gallery),
       "cover": cover,
-      "extra_field": 'NA',
+      "extra_field": "NA",
       "status": selectedStatus,
-      "descriptions": descriptionsTextEditor.text,
-    };
+      "descriptions": descriptionsTextEditor.text
+    }).toList();
+
+    var body = {"data": dataList};
 
     var response = await parser.onSubmit(body);
     Get.back();
+
     if (response.statusCode == 200) {
-      debugPrint(response.bodyString);
       Get.find<ServicesController>().getServices();
-      successToast('Services Added !');
+      successToast('Services Added!');
       onBack();
     } else {
       ApiChecker.checkApi(response);
     }
-    update();
   }
 
   void updateStatus(int status) {
@@ -144,12 +180,18 @@ class AddServicesController extends GetxController implements GetxService {
       selectedServicesId = body['cate_id'].toString();
       nameTextEditor.text = body['name'];
       selectedServicesName = body['web_cates_data']['name'].toString();
-      durationTextEditor.text = body['duration'].toString();
-      priceTextEditor.text = body['price'].toString();
-      discountTextEditor.text = body['discount'].toString();
-      offTextEditor.text = body['off'].toString();
       descriptionsTextEditor.text = body['descriptions'];
       selectedStatus = body['status'];
+
+      if (pricingOptions.isEmpty) {
+        addNewPricingOption();
+      }
+
+      pricingOptions[0].priceController.text = body['price'].toString();
+      pricingOptions[0].discountController.text = body['discount'].toString();
+      pricingOptions[0].offController.text = body['off'].toString();
+      pricingOptions[0].durationController.text = body['duration'].toString();
+
       var imgs = jsonDecode(body['images']);
       gallery = [];
       imgs.forEach((element) {
@@ -162,68 +204,36 @@ class AddServicesController extends GetxController implements GetxService {
   }
 
   Future<void> onUpdateService() async {
-    var body = {
-      "name": nameTextEditor.text,
-      "cate_id": selectedServicesId,
-      "duration": durationTextEditor.text,
-      "price": priceTextEditor.text,
-      "off": offTextEditor.text,
-      "discount": discountTextEditor.text,
-      "images": jsonEncode(gallery),
-      "cover": cover,
-      "extra_field": 'NA',
-      "status": selectedStatus,
-      "descriptions": descriptionsTextEditor.text,
-      "id": serviceId
-    };
-    var response = await parser.onUpdateService(body);
-    Get.back();
-    if (response.statusCode == 200) {
-      debugPrint(response.bodyString);
-      Get.find<ServicesController>().getServices();
-      successToast('services update !');
-      onBack();
-    } else {
-      ApiChecker.checkApi(response);
+    await onSubmit();
+  }
+
+  void onRealPrice(String input, int index) {
+    if (input != '' && pricingOptions[index].discountController.text != '') {
+      double realPrice = double.tryParse(input) ?? 0;
+      double discount = double.tryParse(pricingOptions[index].discountController.text) ?? 0;
+      double off = realPrice - (realPrice * discount / 100);
+      pricingOptions[index].offController.text = off.toStringAsFixed(2);
+      update();
     }
   }
 
-  void onRealPrice(var input) {
-    if (input != '' && discountTextEditor.text != '') {
-      double value = num.tryParse(input)!.toDouble();
-      debugPrint(value.toString());
-      double sellPriceFinal = num.tryParse(discountTextEditor.text)!.toDouble();
-      if (sellPriceFinal > 0 && value > 1) {
-        double discountPriceFinal = num.tryParse(discountTextEditor.text)!.toDouble();
-        double realPrice = num.tryParse(priceTextEditor.text)!.toDouble();
-        percentage(discountPriceFinal, realPrice);
-      }
-    }
-  }
-
-  void onDiscountPrice(var input) {
-    if (input != '' && priceTextEditor.text != '') {
-      double value = num.tryParse(input)!.toDouble();
-      double realPrice = num.tryParse(priceTextEditor.text)!.toDouble();
-      if (realPrice > 0 && value <= 99) {
-        double discountPriceFinal = num.tryParse(discountTextEditor.text)!.toDouble();
-        percentage(discountPriceFinal, realPrice);
-      }
-      if (value >= 99) {
-        discountTextEditor.text = '';
-        discountTextEditor.text = '99';
+  void onDiscountPrice(String input, int index) {
+    if (input != '' && pricingOptions[index].priceController.text != '') {
+      double discount = double.tryParse(input) ?? 0;
+      if (discount > 99) {
+        pricingOptions[index].discountController.text = '99';
         showToast('Discount must be less than 100');
-        update();
       }
+      onRealPrice(pricingOptions[index].priceController.text, index);
     }
   }
 
-  void percentage(double percent, double total) {
+  void percentage(double percent, double total, int index) {
     double sum = (total * percent) / 100;
     sum = double.parse((sum).toStringAsFixed(2));
     debugPrint(sum.toString());
-    double realPrice = num.tryParse(priceTextEditor.text)!.toDouble();
-    offTextEditor.text = (realPrice - sum).toString();
+    double realPrice = num.tryParse(pricingOptions[index].priceController.text)?.toDouble() ?? 0;
+    pricingOptions[index].offController.text = (realPrice - sum).toString();
     update();
   }
 

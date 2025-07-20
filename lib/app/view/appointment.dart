@@ -93,7 +93,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                         child: SizedBox.fromSize(
                                                           size: const Size.fromRadius(25),
                                                           child: FadeInImage(
-                                                            image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentList[index].userInfo!.cover.toString()}'),
+                                                            image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentList[index].userInfo?.cover.toString()}'),
                                                             placeholder: const AssetImage("assets/images/placeholder.jpeg"),
                                                             imageErrorBuilder: (context, error, stackTrace) {
                                                               return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 25, width: 25);
@@ -110,7 +110,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            '${value.appointmentList[index].userInfo!.firstName} ${value.appointmentList[index].userInfo!.lastName}',
+                                                            '${value.appointmentList[index].userInfo?.firstName} ${value.appointmentList[index].userInfo?.lastName}',
                                                             overflow: TextOverflow.ellipsis,
                                                             style: const TextStyle(fontFamily: 'bold', fontSize: 12, color: ThemeProvider.blackColor),
                                                           ),
@@ -366,7 +366,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                         child: SizedBox.fromSize(
                                                           size: const Size.fromRadius(25),
                                                           child: FadeInImage(
-                                                            image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentListOld[index].userInfo!.cover.toString()}'),
+                                                            image: NetworkImage('${Environments.apiBaseURL}storage/images/${value.appointmentListOld[index].userInfo?.cover.toString()}'),
                                                             placeholder: const AssetImage("assets/images/placeholder.jpeg"),
                                                             imageErrorBuilder: (context, error, stackTrace) {
                                                               return Image.asset('assets/images/notfound.png', fit: BoxFit.cover, height: 25, width: 25);
@@ -383,7 +383,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Text(
-                                                            '${value.appointmentListOld[index].userInfo!.firstName} ${value.appointmentListOld[index].userInfo!.lastName}',
+                                                            '${value.appointmentListOld[index].userInfo?.firstName} ${value.appointmentListOld[index].userInfo?.lastName}',
                                                             overflow: TextOverflow.ellipsis,
                                                             style: const TextStyle(fontFamily: 'bold', fontSize: 12, color: ThemeProvider.blackColor),
                                                           ),

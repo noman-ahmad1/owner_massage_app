@@ -8,6 +8,7 @@
 */
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -63,6 +64,8 @@ class ApiService extends GetxService {
 
   Future<Response> postPrivate(String uri, dynamic body, String token) async {
     try {
+      print(jsonEncode(body));
+      print(jsonEncode(token));
       http.Response response = await http.post(Uri.parse(appBaseUrl + uri), body: jsonEncode(body), headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'}).timeout(Duration(seconds: timeoutInSeconds));
       return parseResponse(response, uri);
     } catch (e) {
